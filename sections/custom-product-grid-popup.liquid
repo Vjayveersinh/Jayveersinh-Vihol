@@ -1,16 +1,27 @@
 {% liquid
+  comment
+    Create a unique section ID using the Shopify section.id.
+    This helps keep CSS and JS scoped only to this section instance.
+  endcomment
   assign section_id = 'gift-grid-' | append: section.id
 %}
 
 <section id="{{ section_id }}" class="gift-grid-section">
   <div class="page-width">
     {% if section.settings.heading != blank %}
+      {%- comment -%}
+        Show the section heading only if the merchant entered one in the theme editor.
+      {%- endcomment -%}
       <h2 class="gift-grid-section__heading">{{ section.settings.heading }}</h2>
     {% endif %}
 
     <div class="gift-grid">
       {% for block in section.blocks %}
+        {%- comment -%}
+          Get the product selected for this block from the theme editor.
+        {%- endcomment -%}
         {% assign product = block.settings.product %}
+
         {% if product != blank %}
           <article
             class="gift-grid__item"
@@ -19,6 +30,11 @@
           >
             <div class="gift-grid__image-wrap">
               {% if product.featured_image != blank %}
+                {%- comment -%}
+                  Render the selected product image.
+                  image_url generates the image source.
+                  image_tag outputs a complete responsive <img> tag.
+                {%- endcomment -%}
                 {{
                   product.featured_image
                   | image_url: width: 900
@@ -30,6 +46,10 @@
                 }}
               {% endif %}
 
+              {%- comment -%}
+                Plus button that opens the popup/modal with product details.
+                The product handle is stored on the parent article for JS usage.
+              {%- endcomment -%}
               <button
                 type="button"
                 class="gift-grid__trigger"
@@ -44,6 +64,9 @@
     </div>
   </div>
 
+  {%- comment -%}
+    Hidden modal for showing product details when a product card is clicked.
+  {%- endcomment -%}
   <div class="gift-modal" hidden>
     <div class="gift-modal__overlay" data-close-modal></div>
 
@@ -60,6 +83,10 @@
           <div class="gift-modal__price"></div>
           <div class="gift-modal__description"></div>
 
+          {%- comment -%}
+            JS will dynamically inject option selectors here
+            such as size dropdown or color swatches.
+          {%- endcomment -%}
           <div class="gift-modal__options"></div>
 
           <button type="button" class="gift-modal__add">ADD TO CART →</button>
@@ -71,12 +98,14 @@
 </section>
 
 <style>
+  /* Main container width and horizontal padding */
   #{{ section_id }} .page-width {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
   }
 
+  /* Heading styles */
   #{{ section_id }} .gift-grid-section__heading {
     margin: 56px 0 24px;
     font-size: 36px;
@@ -84,12 +113,14 @@
     font-weight: 400;
   }
 
+  /* Product grid layout: 3 columns on desktop */
   #{{ section_id }} .gift-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
   }
 
+  /* Image wrapper keeps consistent ratio and allows absolute-positioned plus button */
   #{{ section_id }} .gift-grid__image-wrap {
     position: relative;
     aspect-ratio: 0.9 / 1;
@@ -97,6 +128,7 @@
     background: #f5f5f5;
   }
 
+  /* Product image fills the wrapper */
   #{{ section_id }} .gift-grid__image {
     width: 100%;
     height: 100%;
@@ -104,6 +136,7 @@
     display: block;
   }
 
+  /* Plus button placed on top-right of image */
   #{{ section_id }} .gift-grid__trigger {
     position: absolute;
     right: 12px;
@@ -120,22 +153,26 @@
     z-index: 2;
   }
 
+  /* Hide modal when hidden attribute exists */
   #{{ section_id }} .gift-modal[hidden] {
     display: none;
   }
 
+  /* Modal full-screen layer */
   #{{ section_id }} .gift-modal {
     position: fixed;
     inset: 0;
     z-index: 999;
   }
 
+  /* Dark overlay behind popup */
   #{{ section_id }} .gift-modal__overlay {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.28);
   }
 
+  /* Modal dialog box centered on screen */
   #{{ section_id }} .gift-modal__dialog {
     position: absolute;
     top: 50%;
@@ -147,6 +184,7 @@
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
   }
 
+  /* Close (X) button */
   #{{ section_id }} .gift-modal__close {
     position: absolute;
     top: 8px;
@@ -157,51 +195,60 @@
     cursor: pointer;
   }
 
+  /* Layout of image + product info inside modal */
   #{{ section_id }} .gift-modal__content {
     display: grid;
     grid-template-columns: 110px 1fr;
     gap: 14px;
   }
 
+  /* Modal product image */
   #{{ section_id }} .gift-modal__image {
     width: 100%;
     display: block;
   }
 
+  /* Modal title styling */
   #{{ section_id }} .gift-modal__title {
     margin: 0 0 8px;
     font-size: 20px;
     line-height: 1.2;
   }
 
+  /* Price styling */
   #{{ section_id }} .gift-modal__price {
     margin-bottom: 10px;
     font-size: 16px;
     font-weight: 600;
   }
 
+  /* Description styling */
   #{{ section_id }} .gift-modal__description {
     margin-bottom: 14px;
     font-size: 13px;
     line-height: 1.5;
   }
 
+  /* Each option group (size, color, etc.) */
   #{{ section_id }} .gift-modal__option-group {
     margin-bottom: 12px;
   }
 
+  /* Option group label text */
   #{{ section_id }} .gift-modal__option-label {
     margin-bottom: 8px;
     font-size: 12px;
     font-weight: 600;
   }
 
+  /* Container for color/text swatch buttons */
   #{{ section_id }} .gift-modal__swatches {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
   }
 
+  /* Swatch button styling */
   #{{ section_id }} .gift-modal__swatch {
     border: 1px solid #cfcfcf;
     background: #fff;
@@ -210,10 +257,12 @@
     cursor: pointer;
   }
 
+  /* Active/selected swatch */
   #{{ section_id }} .gift-modal__swatch.is-active {
     border-color: #000;
   }
 
+  /* Dropdown styling for size or other select options */
   #{{ section_id }} .gift-modal__select {
     width: 100%;
     min-height: 38px;
@@ -222,6 +271,7 @@
     background: #fff;
   }
 
+  /* Main add to cart button */
   #{{ section_id }} .gift-modal__add {
     width: 100%;
     min-height: 46px;
@@ -234,25 +284,31 @@
     cursor: pointer;
   }
 
+  /* Disabled button state */
   #{{ section_id }} .gift-modal__add:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
 
+  /* Message area for success/error status */
   #{{ section_id }} .gift-modal__status {
     margin-top: 10px;
     font-size: 12px;
   }
 
+  /* Mobile responsive styles */
   @media screen and (max-width: 749px) {
+    /* Show 2 columns on smaller screens */
     #{{ section_id }} .gift-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    /* Stack modal content vertically on mobile */
     #{{ section_id }} .gift-modal__content {
       grid-template-columns: 1fr;
     }
 
+    /* Limit modal media width on mobile */
     #{{ section_id }} .gift-modal__media {
       max-width: 140px;
     }
@@ -261,9 +317,17 @@
 
 <script>
   (() => {
+    /*
+      Self-invoking function keeps all variables private
+      so they do not pollute the global window scope.
+    */
+
     const root = document.getElementById('{{ section_id }}');
+
+    // Stop execution if section root is not found
     if (!root) return;
 
+    // Cache all important modal elements once for better performance
     const modal = root.querySelector('.gift-modal');
     const modalImage = root.querySelector('.gift-modal__image');
     const modalTitle = root.querySelector('.gift-modal__title');
@@ -273,9 +337,16 @@
     const addButton = root.querySelector('.gift-modal__add');
     const statusBox = root.querySelector('.gift-modal__status');
 
+    // Store currently opened product data
     let activeProduct = null;
+
+    // Store currently selected option values like { Color: 'Black', Size: 'M' }
     let selectedOptions = {};
 
+    /*
+      Convert Shopify price in cents into a properly formatted currency string.
+      Example: 4999 -> $49.99
+    */
     const formatMoney = (cents) => {
       return new Intl.NumberFormat('en-CA', {
         style: 'currency',
@@ -283,6 +354,10 @@
       }).format((Number(cents) || 0) / 100);
     };
 
+    /*
+      Get unique values for a product option by reading all variants.
+      Example for size: ["S", "M", "L"]
+    */
     const getUniqueOptionValues = (product, optionIndex) => {
       return [
         ...new Set(
@@ -293,6 +368,10 @@
       ];
     };
 
+    /*
+      Find the currently selected matching variant based on selectedOptions.
+      Returns the exact variant object or null if no match exists.
+    */
     const findSelectedVariant = (product) => {
       if (!product || !product.variants || !product.options) return null;
 
@@ -310,6 +389,10 @@
       );
     };
 
+    /*
+      Refresh displayed price and button state based on selected variant.
+      If no valid variant is found, show "Unavailable".
+    */
     const updateVariantState = () => {
       if (!activeProduct) return;
 
@@ -325,6 +408,11 @@
       addButton.disabled = !variant.available;
     };
 
+    /*
+      Build option selectors inside the modal dynamically.
+      - "Size" uses a dropdown
+      - Other options use clickable swatches/buttons
+    */
     const renderOptions = (product) => {
       modalOptions.innerHTML = '';
       selectedOptions = {};
@@ -340,6 +428,7 @@
             ? optionEntry.values
             : getUniqueOptionValues(product, optionIndex);
 
+        // Default to first available value for each option
         selectedOptions[optionName] = values[0] || '';
 
         const group = document.createElement('div');
@@ -350,6 +439,10 @@
         label.textContent = optionName;
         group.appendChild(label);
 
+        /*
+          Special handling for Size:
+          use a dropdown select instead of button swatches.
+        */
         if (String(optionName).toLowerCase() === 'size') {
           const select = document.createElement('select');
           select.className = 'gift-modal__select';
@@ -370,6 +463,10 @@
 
           group.appendChild(select);
         } else {
+          /*
+            For non-size options like Color,
+            create button-based swatches.
+          */
           const wrap = document.createElement('div');
           wrap.className = 'gift-modal__swatches';
 
@@ -382,10 +479,12 @@
             button.addEventListener('click', () => {
               selectedOptions[optionName] = value;
 
+              // Remove active class from all swatches in this group
               wrap.querySelectorAll('.gift-modal__swatch').forEach((swatch) => {
                 swatch.classList.remove('is-active');
               });
 
+              // Mark clicked swatch as active
               button.classList.add('is-active');
               updateVariantState();
             });
@@ -400,9 +499,16 @@
       });
     };
 
+    /*
+      Open modal and populate it with product data fetched from Shopify.
+    */
     const openModal = (product) => {
       activeProduct = product;
 
+      /*
+        Choose the best available product image source.
+        This handles different possible Shopify image structures.
+      */
       const featuredImage =
         product.featured_image?.src ||
         product.featured_image ||
@@ -418,16 +524,29 @@
       renderOptions(product);
       updateVariantState();
 
+      // Reset previous success/error message
       statusBox.textContent = '';
+
+      // Show modal
       modal.hidden = false;
+
+      // Optional: prevent body scrolling while popup is open
       document.body.classList.add('overflow-hidden');
     };
 
+    /*
+      Close modal and restore body scrolling.
+    */
     const closeModal = () => {
       modal.hidden = true;
       document.body.classList.remove('overflow-hidden');
     };
 
+    /*
+      Add one or more items to Shopify cart through AJAX.
+      items must look like:
+      [{ id: variantId, quantity: 1 }]
+    */
     const addItems = async (items) => {
       const response = await fetch('/cart/add.js', {
         method: 'POST',
@@ -439,6 +558,7 @@
         body: JSON.stringify({ items })
       });
 
+      // If Shopify returns an error, read it and throw it
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText || 'Add to cart failed');
@@ -447,35 +567,45 @@
       return response.json();
     };
 
+    /*
+      Fetch the bonus product by handle and return its first available variant ID.
+      This is used when user selects Black + Medium on the main product.
+    */
     const getBonusVariantId = async () => {
-  const handle = 'dark-winter-jacket';
+      const handle = 'dark-winter-jacket';
 
-  console.log('BONUS HANDLE:', handle);
+      console.log('BONUS HANDLE:', handle);
 
-  const response = await fetch(`/products/${handle}.js`, {
-    credentials: 'same-origin'
-  });
+      const response = await fetch(`/products/${handle}.js`, {
+        credentials: 'same-origin'
+      });
 
-  console.log('BONUS FETCH STATUS:', response.status);
+      console.log('BONUS FETCH STATUS:', response.status);
 
-  if (!response.ok) {
-    console.warn(`Bonus product handle "${handle}" was not found.`);
-    return null;
-  }
+      if (!response.ok) {
+        console.warn(`Bonus product handle "${handle}" was not found.`);
+        return null;
+      }
 
-  const product = await response.json();
-  console.log('BONUS PRODUCT:', product);
+      const product = await response.json();
+      console.log('BONUS PRODUCT:', product);
 
-  const firstAvailable = (product.variants || []).find((variant) => variant.available);
+      // Pick the first available variant of the bonus product
+      const firstAvailable = (product.variants || []).find((variant) => variant.available);
 
-  if (!firstAvailable) {
-    console.warn('Dark Winter Jacket has no available variants.');
-    return null;
-  }
+      if (!firstAvailable) {
+        console.warn('Dark Winter Jacket has no available variants.');
+        return null;
+      }
 
-  return firstAvailable.id;
-};
+      return firstAvailable.id;
+    };
 
+    /*
+      Event delegation:
+      Listen for clicks anywhere inside the section,
+      then check if a plus button was clicked.
+    */
     root.addEventListener('click', async (event) => {
       const trigger = event.target.closest('.gift-grid__trigger');
       if (!trigger || !root.contains(trigger)) return;
@@ -483,10 +613,12 @@
       const item = trigger.closest('.gift-grid__item');
       if (!item) return;
 
+      // Read product handle stored in HTML data attribute
       const handle = item.getAttribute('data-product-handle');
       if (!handle) return;
 
       try {
+        // Fetch full product JSON from Shopify
         const response = await fetch(`/products/${handle}.js`, {
           credentials: 'same-origin'
         });
@@ -501,71 +633,106 @@
       }
     });
 
+    /*
+      Close modal when user clicks overlay or close button.
+    */
     root.querySelectorAll('[data-close-modal]').forEach((button) => {
       button.addEventListener('click', closeModal);
     });
 
-  addButton.addEventListener('click', async () => {
-  if (!activeProduct) return;
+    /*
+      Add-to-cart button logic:
+      1. Find selected variant
+      2. Add main product
+      3. If selected option matches Black + Medium, also add bonus product
+      4. If bonus add fails, fallback to adding only main product
+    */
+    addButton.addEventListener('click', async () => {
+      if (!activeProduct) return;
 
-  const selectedVariant = findSelectedVariant(activeProduct);
-  if (!selectedVariant || !selectedVariant.id) {
-    statusBox.textContent = 'Please choose valid options.';
-    return;
-  }
+      const selectedVariant = findSelectedVariant(activeProduct);
 
-  try {
-    const items = [{ id: selectedVariant.id, quantity: 1 }];
+      if (!selectedVariant || !selectedVariant.id) {
+        statusBox.textContent = 'Please choose valid options.';
+        return;
+      }
 
-    const optionMap = {};
+      try {
+        // Start with the main selected product variant
+        const items = [{ id: selectedVariant.id, quantity: 1 }];
 
-    (activeProduct.options || []).forEach((optionEntry, index) => {
-      const optionName =
-        typeof optionEntry === 'string'
-          ? optionEntry
-          : optionEntry?.name || `Option ${index + 1}`;
+        /*
+          Build a normalized option map for easier checking.
+          Example:
+          {
+            color: 'black',
+            size: 'medium'
+          }
+        */
+        const optionMap = {};
 
-      optionMap[String(optionName).toLowerCase().trim()] = String(
-        selectedVariant.options?.[index] || ''
-      ).toLowerCase().trim();
+        (activeProduct.options || []).forEach((optionEntry, index) => {
+          const optionName =
+            typeof optionEntry === 'string'
+              ? optionEntry
+              : optionEntry?.name || `Option ${index + 1}`;
+
+          optionMap[String(optionName).toLowerCase().trim()] = String(
+            selectedVariant.options?.[index] || ''
+          ).toLowerCase().trim();
+        });
+
+        const color = optionMap.color || '';
+        const size = optionMap.size || '';
+
+        const isBlack = color === 'black';
+        const isMedium = size === 'm' || size === 'medium';
+
+        /*
+          Business rule:
+          If shopper selects Black + Medium,
+          automatically add bonus product too.
+        */
+        if (isBlack && isMedium) {
+          const bonusVariantId = await getBonusVariantId();
+
+          if (bonusVariantId) {
+            items.push({ id: bonusVariantId, quantity: 1 });
+          } else {
+            console.warn('Soft Winter Jacket not set or no available variant found.');
+          }
+        }
+
+        // Add all items in one cart request
+        await addItems(items);
+
+        // Show status based on whether bonus item was added too
+        if (items.length > 1) {
+          statusBox.textContent = 'Added to cart with Soft Winter Jacket.';
+        } else {
+          statusBox.textContent = 'Added to cart.';
+        }
+      } catch (error) {
+        console.error('PRIMARY ADD ERROR:', error);
+
+        /*
+          Fallback logic:
+          If adding both items fails for any reason,
+          try adding only the main selected variant.
+        */
+        try {
+          await addItems([{ id: selectedVariant.id, quantity: 1 }]);
+          statusBox.textContent = 'Added to cart.';
+        } catch (fallbackError) {
+          statusBox.textContent = 'Could not add to cart. Please try again.';
+          console.error('FALLBACK ADD ERROR:', fallbackError);
+        }
+      }
     });
 
-    const color = optionMap.color || '';
-    const size = optionMap.size || '';
-
-    const isBlack = color === 'black';
-    const isMedium = size === 'm' || size === 'medium';
-
-    if (isBlack && isMedium) {
-      const bonusVariantId = await getBonusVariantId();
-
-      if (bonusVariantId) {
-        items.push({ id: bonusVariantId, quantity: 1 });
-      } else {
-        console.warn('Soft Winter Jacket not set or no available variant found.');
-      }
-    }
-
-    await addItems(items);
-
-    if (items.length > 1) {
-      statusBox.textContent = 'Added to cart with Soft Winter Jacket.';
-    } else {
-      statusBox.textContent = 'Added to cart.';
-    }
-  } catch (error) {
-    console.error('PRIMARY ADD ERROR:', error);
-
-    try {
-      await addItems([{ id: selectedVariant.id, quantity: 1 }]);
-      statusBox.textContent = 'Added to cart.';
-    } catch (fallbackError) {
-      statusBox.textContent = 'Could not add to cart. Please try again.';
-      console.error('FALLBACK ADD ERROR:', fallbackError);
-    }
-  }
-});
-
+    /*
+      Allow user to close the modal using Escape key.
+    */
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && !modal.hidden) {
         closeModal();
