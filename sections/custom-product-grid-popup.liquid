@@ -1,0 +1,623 @@
+{% liquid
+  assign section_id = 'gift-grid-' | append: section.id
+%}
+
+<section id="{{ section_id }}" class="gift-grid-section">
+  <div class="page-width">
+    {% if section.settings.heading != blank %}
+      <h2 class="gift-grid-section__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="gift-grid">
+      {% for block in section.blocks %}
+        {% assign product = block.settings.product %}
+        {% if product != blank %}
+          <article
+            class="gift-grid__item"
+            {{ block.shopify_attributes }}
+            data-product-handle="{{ product.handle }}"
+          >
+            <div class="gift-grid__image-wrap">
+              {% if product.featured_image != blank %}
+                {{
+                  product.featured_image
+                  | image_url: width: 900
+                  | image_tag:
+                    class: 'gift-grid__image',
+                    loading: 'lazy',
+                    widths: '320, 450, 700, 900',
+                    alt: product.title
+                }}
+              {% endif %}
+
+              <button
+                type="button"
+                class="gift-grid__trigger"
+                aria-label="Open product details for {{ product.title | escape }}"
+              >
+                +
+              </button>
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="gift-modal" hidden>
+    <div class="gift-modal__overlay" data-close-modal></div>
+
+    <div class="gift-modal__dialog" role="dialog" aria-modal="true">
+      <button type="button" class="gift-modal__close" data-close-modal>×</button>
+
+      <div class="gift-modal__content">
+        <div class="gift-modal__media">
+          <img class="gift-modal__image" src="" alt="">
+        </div>
+
+        <div class="gift-modal__info">
+          <h3 class="gift-modal__title"></h3>
+          <div class="gift-modal__price"></div>
+          <div class="gift-modal__description"></div>
+
+          <div class="gift-modal__options"></div>
+
+          <button type="button" class="gift-modal__add">ADD TO CART →</button>
+          <div class="gift-modal__status" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} .page-width {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  #{{ section_id }} .gift-grid-section__heading {
+    margin: 56px 0 24px;
+    font-size: 36px;
+    line-height: 1.1;
+    font-weight: 400;
+  }
+
+  #{{ section_id }} .gift-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  #{{ section_id }} .gift-grid__image-wrap {
+    position: relative;
+    aspect-ratio: 0.9 / 1;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  #{{ section_id }} .gift-grid__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #{{ section_id }} .gift-grid__trigger {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    z-index: 2;
+  }
+
+  #{{ section_id }} .gift-modal[hidden] {
+    display: none;
+  }
+
+  #{{ section_id }} .gift-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+  }
+
+  #{{ section_id }} .gift-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.28);
+  }
+
+  #{{ section_id }} .gift-modal__dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(92vw, 430px);
+    background: #fff;
+    padding: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+  }
+
+  #{{ section_id }} .gift-modal__close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  #{{ section_id }} .gift-modal__content {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 14px;
+  }
+
+  #{{ section_id }} .gift-modal__image {
+    width: 100%;
+    display: block;
+  }
+
+  #{{ section_id }} .gift-modal__title {
+    margin: 0 0 8px;
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  #{{ section_id }} .gift-modal__price {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  #{{ section_id }} .gift-modal__description {
+    margin-bottom: 14px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  #{{ section_id }} .gift-modal__option-group {
+    margin-bottom: 12px;
+  }
+
+  #{{ section_id }} .gift-modal__option-label {
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  #{{ section_id }} .gift-modal__swatches {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  #{{ section_id }} .gift-modal__swatch {
+    border: 1px solid #cfcfcf;
+    background: #fff;
+    min-height: 36px;
+    padding: 0 14px;
+    cursor: pointer;
+  }
+
+  #{{ section_id }} .gift-modal__swatch.is-active {
+    border-color: #000;
+  }
+
+  #{{ section_id }} .gift-modal__select {
+    width: 100%;
+    min-height: 38px;
+    border: 1px solid #cfcfcf;
+    padding: 0 12px;
+    background: #fff;
+  }
+
+  #{{ section_id }} .gift-modal__add {
+    width: 100%;
+    min-height: 46px;
+    border: none;
+    background: #000;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+
+  #{{ section_id }} .gift-modal__add:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  #{{ section_id }} .gift-modal__status {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+
+  @media screen and (max-width: 749px) {
+    #{{ section_id }} .gift-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #{{ section_id }} .gift-modal__content {
+      grid-template-columns: 1fr;
+    }
+
+    #{{ section_id }} .gift-modal__media {
+      max-width: 140px;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const root = document.getElementById('{{ section_id }}');
+    if (!root) return;
+
+    const modal = root.querySelector('.gift-modal');
+    const modalImage = root.querySelector('.gift-modal__image');
+    const modalTitle = root.querySelector('.gift-modal__title');
+    const modalPrice = root.querySelector('.gift-modal__price');
+    const modalDescription = root.querySelector('.gift-modal__description');
+    const modalOptions = root.querySelector('.gift-modal__options');
+    const addButton = root.querySelector('.gift-modal__add');
+    const statusBox = root.querySelector('.gift-modal__status');
+
+    let activeProduct = null;
+    let selectedOptions = {};
+
+    const formatMoney = (cents) => {
+      return new Intl.NumberFormat('en-CA', {
+        style: 'currency',
+        currency: '{{ cart.currency.iso_code | default: shop.currency }}'
+      }).format((Number(cents) || 0) / 100);
+    };
+
+    const getUniqueOptionValues = (product, optionIndex) => {
+      return [
+        ...new Set(
+          (product.variants || [])
+            .map((variant) => variant.options?.[optionIndex])
+            .filter(Boolean)
+        )
+      ];
+    };
+
+    const findSelectedVariant = (product) => {
+      if (!product || !product.variants || !product.options) return null;
+
+      return (
+        product.variants.find((variant) => {
+          return product.options.every((optionEntry, index) => {
+            const optionName =
+              typeof optionEntry === 'string'
+                ? optionEntry
+                : optionEntry?.name || `Option ${index + 1}`;
+
+            return selectedOptions[optionName] === variant.options?.[index];
+          });
+        }) || null
+      );
+    };
+
+    const updateVariantState = () => {
+      if (!activeProduct) return;
+
+      const variant = findSelectedVariant(activeProduct);
+
+      if (!variant) {
+        modalPrice.textContent = 'Unavailable';
+        addButton.disabled = true;
+        return;
+      }
+
+      modalPrice.textContent = formatMoney(variant.price);
+      addButton.disabled = !variant.available;
+    };
+
+    const renderOptions = (product) => {
+      modalOptions.innerHTML = '';
+      selectedOptions = {};
+
+      (product.options || []).forEach((optionEntry, optionIndex) => {
+        const optionName =
+          typeof optionEntry === 'string'
+            ? optionEntry
+            : optionEntry?.name || `Option ${optionIndex + 1}`;
+
+        const values =
+          Array.isArray(optionEntry?.values) && optionEntry.values.length
+            ? optionEntry.values
+            : getUniqueOptionValues(product, optionIndex);
+
+        selectedOptions[optionName] = values[0] || '';
+
+        const group = document.createElement('div');
+        group.className = 'gift-modal__option-group';
+
+        const label = document.createElement('div');
+        label.className = 'gift-modal__option-label';
+        label.textContent = optionName;
+        group.appendChild(label);
+
+        if (String(optionName).toLowerCase() === 'size') {
+          const select = document.createElement('select');
+          select.className = 'gift-modal__select';
+
+          values.forEach((value) => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            select.appendChild(option);
+          });
+
+          select.value = values[0] || '';
+
+          select.addEventListener('change', () => {
+            selectedOptions[optionName] = select.value;
+            updateVariantState();
+          });
+
+          group.appendChild(select);
+        } else {
+          const wrap = document.createElement('div');
+          wrap.className = 'gift-modal__swatches';
+
+          values.forEach((value, index) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = `gift-modal__swatch${index === 0 ? ' is-active' : ''}`;
+            button.textContent = value;
+
+            button.addEventListener('click', () => {
+              selectedOptions[optionName] = value;
+
+              wrap.querySelectorAll('.gift-modal__swatch').forEach((swatch) => {
+                swatch.classList.remove('is-active');
+              });
+
+              button.classList.add('is-active');
+              updateVariantState();
+            });
+
+            wrap.appendChild(button);
+          });
+
+          group.appendChild(wrap);
+        }
+
+        modalOptions.appendChild(group);
+      });
+    };
+
+    const openModal = (product) => {
+      activeProduct = product;
+
+      const featuredImage =
+        product.featured_image?.src ||
+        product.featured_image ||
+        product.images?.[0]?.src ||
+        product.images?.[0] ||
+        '';
+
+      modalImage.src = featuredImage;
+      modalImage.alt = product.title || '';
+      modalTitle.textContent = product.title || '';
+      modalDescription.innerHTML = product.description || '';
+
+      renderOptions(product);
+      updateVariantState();
+
+      statusBox.textContent = '';
+      modal.hidden = false;
+      document.body.classList.add('overflow-hidden');
+    };
+
+    const closeModal = () => {
+      modal.hidden = true;
+      document.body.classList.remove('overflow-hidden');
+    };
+
+    const addItems = async (items) => {
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ items })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Add to cart failed');
+      }
+
+      return response.json();
+    };
+
+    const getBonusVariantId = async () => {
+  const handle = 'dark-winter-jacket';
+
+  console.log('BONUS HANDLE:', handle);
+
+  const response = await fetch(`/products/${handle}.js`, {
+    credentials: 'same-origin'
+  });
+
+  console.log('BONUS FETCH STATUS:', response.status);
+
+  if (!response.ok) {
+    console.warn(`Bonus product handle "${handle}" was not found.`);
+    return null;
+  }
+
+  const product = await response.json();
+  console.log('BONUS PRODUCT:', product);
+
+  const firstAvailable = (product.variants || []).find((variant) => variant.available);
+
+  if (!firstAvailable) {
+    console.warn('Dark Winter Jacket has no available variants.');
+    return null;
+  }
+
+  return firstAvailable.id;
+};
+
+    root.addEventListener('click', async (event) => {
+      const trigger = event.target.closest('.gift-grid__trigger');
+      if (!trigger || !root.contains(trigger)) return;
+
+      const item = trigger.closest('.gift-grid__item');
+      if (!item) return;
+
+      const handle = item.getAttribute('data-product-handle');
+      if (!handle) return;
+
+      try {
+        const response = await fetch(`/products/${handle}.js`, {
+          credentials: 'same-origin'
+        });
+
+        if (!response.ok) throw new Error('Failed to load product');
+
+        const product = await response.json();
+        openModal(product);
+      } catch (error) {
+        statusBox.textContent = 'Could not load product details.';
+        console.error(error);
+      }
+    });
+
+    root.querySelectorAll('[data-close-modal]').forEach((button) => {
+      button.addEventListener('click', closeModal);
+    });
+
+  addButton.addEventListener('click', async () => {
+  if (!activeProduct) return;
+
+  const selectedVariant = findSelectedVariant(activeProduct);
+  if (!selectedVariant || !selectedVariant.id) {
+    statusBox.textContent = 'Please choose valid options.';
+    return;
+  }
+
+  try {
+    const items = [{ id: selectedVariant.id, quantity: 1 }];
+
+    const optionMap = {};
+
+    (activeProduct.options || []).forEach((optionEntry, index) => {
+      const optionName =
+        typeof optionEntry === 'string'
+          ? optionEntry
+          : optionEntry?.name || `Option ${index + 1}`;
+
+      optionMap[String(optionName).toLowerCase().trim()] = String(
+        selectedVariant.options?.[index] || ''
+      ).toLowerCase().trim();
+    });
+
+    const color = optionMap.color || '';
+    const size = optionMap.size || '';
+
+    const isBlack = color === 'black';
+    const isMedium = size === 'm' || size === 'medium';
+
+    if (isBlack && isMedium) {
+      const bonusVariantId = await getBonusVariantId();
+
+      if (bonusVariantId) {
+        items.push({ id: bonusVariantId, quantity: 1 });
+      } else {
+        console.warn('Soft Winter Jacket not set or no available variant found.');
+      }
+    }
+
+    await addItems(items);
+
+    if (items.length > 1) {
+      statusBox.textContent = 'Added to cart with Soft Winter Jacket.';
+    } else {
+      statusBox.textContent = 'Added to cart.';
+    }
+  } catch (error) {
+    console.error('PRIMARY ADD ERROR:', error);
+
+    try {
+      await addItems([{ id: selectedVariant.id, quantity: 1 }]);
+      statusBox.textContent = 'Added to cart.';
+    } catch (fallbackError) {
+      statusBox.textContent = 'Could not add to cart. Please try again.';
+      console.error('FALLBACK ADD ERROR:', fallbackError);
+    }
+  }
+});
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !modal.hidden) {
+        closeModal();
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom Product Grid Popup",
+  "tag": "section",
+  "class": "section section-custom-product-grid-popup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Tisso vision in the wild"
+    },
+    {
+      "type": "product",
+      "id": "soft_winter_jacket",
+      "label": "Soft Winter Jacket product"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_card",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select product"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Custom Product Grid Popup",
+      "blocks": [
+        { "type": "product_card" },
+        { "type": "product_card" },
+        { "type": "product_card" },
+        { "type": "product_card" },
+        { "type": "product_card" },
+        { "type": "product_card" }
+      ]
+    }
+  ]
+}
+{% endschema %}
