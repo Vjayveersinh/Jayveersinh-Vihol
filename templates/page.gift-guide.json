@@ -1,13 +1,89 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "banner": {
       "type": "custom-gift-banner",
-      "settings": {}
+      "custom_css": [],
+      "settings": {
+        "brand_text": "TISSO VISION",
+        "top_message": "Find the ideal gift for your loved ones.",
+        "choose_gift_text": "Choose gift",
+        "choose_gift_link": "",
+        "heading": "The Gift Guide",
+        "description": "<p>Discover joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>",
+        "button_text": "Shop now",
+        "button_link": "",
+        "hero_image": "shopify://shop_images/urban-fashion_925x_04757033-09c4-48c7-99e6-b2cb8ab8a7f9.jpg",
+        "bottom_message": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL",
+        "section_bg": "#ffffff",
+        "bar_bg": "#f4f4f1",
+        "hero_bg": "#ffffff"
+      }
     },
     "grid": {
       "type": "custom-product-grid-popup",
-      "settings": {}
+      "blocks": {
+        "product_card_dpU6N3": {
+          "type": "product_card",
+          "settings": {
+            "product": "dark-denim-top"
+          }
+        },
+        "product_card_hBBQcY": {
+          "type": "product_card",
+          "settings": {
+            "product": "black-leather-bag"
+          }
+        },
+        "product_card_RPfjxF": {
+          "type": "product_card",
+          "settings": {
+            "product": "blue-silk-tuxedo"
+          }
+        },
+        "product_card_Nb4Qjr": {
+          "type": "product_card",
+          "settings": {
+            "product": "chequered-red-shirt"
+          }
+        },
+        "product_card_YHF4YG": {
+          "type": "product_card",
+          "settings": {
+            "product": "classic-leather-jacket"
+          }
+        },
+        "product_card_qePAAt": {
+          "type": "product_card",
+          "settings": {
+            "product": "classic-varsity-top"
+          }
+        }
+      },
+      "block_order": [
+        "product_card_dpU6N3",
+        "product_card_hBBQcY",
+        "product_card_RPfjxF",
+        "product_card_Nb4Qjr",
+        "product_card_YHF4YG",
+        "product_card_qePAAt"
+      ],
+      "settings": {
+        "heading": "Tisso vision in the wild",
+        "soft_winter_jacket": "dark-winter-jacket"
+      }
     }
   },
-  "order": ["banner", "grid"]
+  "order": [
+    "banner",
+    "grid"
+  ]
 }
