@@ -11,7 +11,10 @@
   "sections": {
     "banner": {
       "type": "custom-gift-banner",
-      "custom_css": [],
+      "custom_css": [
+        ".gift-banner__footerbar {display: flex; justify-content: center; /* horizontal center */ align-items: center; /* vertical center */ text-align: center;}",
+        ".gift-banner__footerbar p {margin: 0; white-space: nowrap; /* prevent line break */}"
+      ],
       "settings": {
         "brand_text": "TISSO VISION",
         "top_message": "Find the ideal gift for your loved ones.",
